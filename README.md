@@ -36,3 +36,6 @@ O projeto será composto por:
 
 Este projeto possui uma esteira CI/CD configurada com AWS CodePipeline e AWS CodeBuild.  
 Ao realizar um commit na branch `main`, o pipeline é acionado automaticamente e executa o deploy da infraestrutura via AWS CDK.
+## Teste de acionamento automático
+
+Alteração realizada para validar que um commit na branch `main` aciona automaticamente o AWS CodePipeline.
