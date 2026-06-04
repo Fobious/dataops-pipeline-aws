@@ -32,8 +32,7 @@ O projeto será composto por:
 7. CloudWatch monitora a execução;
 8. Em caso de falha, SNS envia alerta por e-mail.
 
-## Entregáveis
+   ## Evidência de CI/CD
 
-- Link do repositório;
-- Diagrama do pipeline CI/CD;
-- Print do e-mail de alerta recebido após falha simulada.
+Este projeto possui uma esteira CI/CD configurada com AWS CodePipeline e AWS CodeBuild.  
+Ao realizar um commit na branch `main`, o pipeline é acionado automaticamente e executa o deploy da infraestrutura via AWS CDK.
