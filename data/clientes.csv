@@ -1,0 +1,11 @@
+id_cliente,nome,cpf,email,telefone,status_cliente,uf
+1,Ana Souza,123.456.789-10,ana.souza@email.com,21999990001,ativo,RJ
+2,Bruno Lima,987.654.321-00,bruno.lima@email.com,11988880002,ativo,SP
+3,Carla Mendes,456.789.123-55,carla.mendes@email.com,31977770003,inativo,MG
+4,Diego Alves,321.654.987-22,diego.alves@email.com,41966660004,ativo,PR
+5,Elisa Rocha,789.123.456-88,elisa.rocha@email.com,61955550005,bloqueado,DF
+6,Fernando Castro,654.987.321-44,fernando.castro@email.com,21944440006,ativo,RJ
+7,Gabriela Martins,111.222.333-44,gabriela.martins@email.com,11933330007,inativo,SP
+8,Henrique Costa,222.333.444-55,henrique.costa@email.com,31922220008,ativo,MG
+9,Isabela Fernandes,333.444.555-66,isabela.fernandes@email.com,41911110009,ativo,PR
+10,Joao Pereira,444.555.666-77,joao.pereira@email.com,61900000010,bloqueado,DF
