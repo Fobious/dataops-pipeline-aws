@@ -1,0 +1,21 @@
+# Ambientes virtuais
+.venv/
+.venv_dbt/
+infrastructure/.venv/
+
+# Logs
+logs/
+dbt/logs/
+
+# dbt artefatos gerados
+target/
+dbt/dataops_governanca/target/
+dbt/dataops_governanca/dbt_packages/
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema
+.DS_Store
+Thumbs.db

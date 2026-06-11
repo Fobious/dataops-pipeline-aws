@@ -46,6 +46,62 @@ class InfrastructureStack(Stack):
             destination_key_prefix="scripts/dbt",
         )
 
+        s3deploy.BucketDeployment(
+            self,
+            "DeployDataFiles",
+            sources=[s3deploy.Source.asset("../data")],
+            destination_bucket=scripts_bucket,
+            destination_key_prefix="data/clientes",
+        )
+
+        glue_database = glue.CfnDatabase(
+            self,
+            "DataOpsGovernancaDatabase",
+            catalog_id=self.account,
+            database_input=glue.CfnDatabase.DatabaseInputProperty(
+                name="dataops_governanca_db",
+                description="Database do TP2 para governanca, qualidade e LGPD."
+            ),
+        )
+
+        glue.CfnTable(
+            self,
+            "ClientesGlueTable",
+            catalog_id=self.account,
+            database_name=glue_database.ref,
+            table_input=glue.CfnTable.TableInputProperty(
+                name="clientes",
+                description="Tabela de clientes utilizada no TP2 para testes de qualidade, PII e Lake Formation.",
+                table_type="EXTERNAL_TABLE",
+                parameters={
+                    "classification": "csv",
+                    "skip.header.line.count": "1",
+                    "EXTERNAL": "TRUE",
+                },
+                storage_descriptor=glue.CfnTable.StorageDescriptorProperty(
+                    location=f"s3://{scripts_bucket.bucket_name}/data/clientes/",
+                    input_format="org.apache.hadoop.mapred.TextInputFormat",
+                    output_format="org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+                    serde_info=glue.CfnTable.SerdeInfoProperty(
+                        serialization_library="org.apache.hadoop.hive.serde2.OpenCSVSerde",
+                        parameters={
+                            "separatorChar": ",",
+                            "quoteChar": "\"",
+                        },
+                    ),
+                    columns=[
+                        glue.CfnTable.ColumnProperty(name="id_cliente", type="int"),
+                        glue.CfnTable.ColumnProperty(name="nome", type="string"),
+                        glue.CfnTable.ColumnProperty(name="cpf", type="string"),
+                        glue.CfnTable.ColumnProperty(name="email", type="string"),
+                        glue.CfnTable.ColumnProperty(name="telefone", type="string"),
+                        glue.CfnTable.ColumnProperty(name="status_cliente", type="string"),
+                        glue.CfnTable.ColumnProperty(name="uf", type="string"),
+                    ],
+                ),
+            ),
+        )
+
         glue_role = iam.Role(
             self,
             "DataOpsGlueRole",
