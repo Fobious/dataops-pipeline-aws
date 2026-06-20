@@ -1,0 +1,33 @@
+========================================
+RELATORIO DE DETECCAO DE PII
+========================================
+Data de execucao: 2026-06-20 20:24:31
+Arquivo analisado: data\clientes.csv
+Limite de deteccao: 60%
+
+Colunas PII identificadas:
+
+Coluna: cpf
+Tipo PII: CPF
+Valores analisados: 10
+Matches encontrados: 10
+Taxa de match: 100.00%
+Classificacao: PII
+Criterio: Regex com taxa >= 60%
+----------------------------------------
+Coluna: email
+Tipo PII: EMAIL
+Valores analisados: 10
+Matches encontrados: 10
+Taxa de match: 100.00%
+Classificacao: PII
+Criterio: Regex com taxa >= 60%
+----------------------------------------
+Coluna: telefone
+Tipo PII: TELEFONE
+Valores analisados: 10
+Matches encontrados: 10
+Taxa de match: 100.00%
+Classificacao: PII
+Criterio: Regex com taxa >= 60%
+----------------------------------------
