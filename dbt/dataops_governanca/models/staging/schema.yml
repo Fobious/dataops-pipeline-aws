@@ -1,0 +1,56 @@
+version: 2
+
+sources:
+  - name: raw
+    database: awsdatacatalog
+    schema: dataops_governanca_db
+    description: "Fonte bruta registrada no AWS Glue Data Catalog para o TP2 de governança."
+    tables:
+      - name: clientes
+        description: "Tabela bruta de clientes usada para validação de qualidade, identificação de PII e controle de acesso via Lake Formation."
+
+models:
+  - name: stg_clientes
+    description: "Modelo de staging da tabela de clientes. Aqui Organiza os dados vindos do Glue Catalog para aplicação de testes de qualidade e documentação."
+    columns:
+      - name: id_cliente
+        description: "Identificador único do cliente."
+        tests:
+          - not_null
+          - unique
+
+      - name: nome
+        description: "Nome do cliente."
+        tests:
+          - not_null
+
+      - name: cpf
+        description: "CPF do cliente. Campo classificado como PII e sujeito a restrição de acesso."
+        tests:
+          - not_null
+          - unique
+
+      - name: email
+        description: "Endereço de e-mail do cliente. Campo classificado como PII."
+        tests:
+          - not_null
+          - unique
+
+      - name: telefone
+        description: "Telefone do cliente. Campo classificado como PII."
+        tests:
+          - not_null
+
+      - name: status_cliente
+        description: "Status cadastral do cliente."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ativo', 'inativo', 'bloqueado']
+
+      - name: uf
+        description: "Unidade federativa do cliente."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['RJ', 'SP', 'MG', 'PR', 'DF']
