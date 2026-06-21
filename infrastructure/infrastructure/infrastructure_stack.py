@@ -48,10 +48,26 @@ class InfrastructureStack(Stack):
 
         s3deploy.BucketDeployment(
             self,
-            "DeployDataFiles",
-            sources=[s3deploy.Source.asset("../data")],
+            "DeployClientesDataFiles",
+            sources=[s3deploy.Source.asset("../data/clientes")],
             destination_bucket=scripts_bucket,
             destination_key_prefix="data/clientes",
+        )
+
+        s3deploy.BucketDeployment(
+            self,
+            "DeployProdutosDataFiles",
+            sources=[s3deploy.Source.asset("../data/produtos")],
+            destination_bucket=scripts_bucket,
+            destination_key_prefix="data/produtos",
+        )
+
+        s3deploy.BucketDeployment(
+            self,
+            "DeployVendasDataFiles",
+            sources=[s3deploy.Source.asset("../data/vendas")],
+            destination_bucket=scripts_bucket,
+            destination_key_prefix="data/vendas",
         )
 
         glue_database = glue.CfnDatabase(
@@ -97,6 +113,80 @@ class InfrastructureStack(Stack):
                         glue.CfnTable.ColumnProperty(name="telefone", type="string"),
                         glue.CfnTable.ColumnProperty(name="status_cliente", type="string"),
                         glue.CfnTable.ColumnProperty(name="uf", type="string"),
+                    ],
+                ),
+            ),
+        )
+
+        glue.CfnTable(
+            self,
+            "ProdutosGlueTable",
+            catalog_id=self.account,
+            database_name=glue_database.ref,
+            table_input=glue.CfnTable.TableInputProperty(
+                name="produtos",
+                description="Tabela de produtos utilizada no TP3 para análises de vendas e construção de dashboards.",
+                table_type="EXTERNAL_TABLE",
+                parameters={
+                    "classification": "csv",
+                    "skip.header.line.count": "1",
+                    "EXTERNAL": "TRUE",
+                },
+                storage_descriptor=glue.CfnTable.StorageDescriptorProperty(
+                    location=f"s3://{scripts_bucket.bucket_name}/data/produtos/",
+                    input_format="org.apache.hadoop.mapred.TextInputFormat",
+                    output_format="org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+                    serde_info=glue.CfnTable.SerdeInfoProperty(
+                        serialization_library="org.apache.hadoop.hive.serde2.OpenCSVSerde",
+                        parameters={
+                            "separatorChar": ",",
+                            "quoteChar": "\"",
+                        },
+                    ),
+                    columns=[
+                        glue.CfnTable.ColumnProperty(name="id_produto", type="int"),
+                        glue.CfnTable.ColumnProperty(name="nome_produto", type="string"),
+                        glue.CfnTable.ColumnProperty(name="categoria", type="string"),
+                    ],
+                ),
+            ),
+        )
+
+        glue.CfnTable(
+            self,
+            "VendasGlueTable",
+            catalog_id=self.account,
+            database_name=glue_database.ref,
+            table_input=glue.CfnTable.TableInputProperty(
+                name="vendas",
+                description="Tabela de vendas utilizada no TP3 para consultas ad hoc, dashboard QuickSight e geração de features para ML.",
+                table_type="EXTERNAL_TABLE",
+                parameters={
+                    "classification": "csv",
+                    "skip.header.line.count": "1",
+                    "EXTERNAL": "TRUE",
+                },
+                storage_descriptor=glue.CfnTable.StorageDescriptorProperty(
+                    location=f"s3://{scripts_bucket.bucket_name}/data/vendas/",
+                    input_format="org.apache.hadoop.mapred.TextInputFormat",
+                    output_format="org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
+                    serde_info=glue.CfnTable.SerdeInfoProperty(
+                        serialization_library="org.apache.hadoop.hive.serde2.OpenCSVSerde",
+                        parameters={
+                            "separatorChar": ",",
+                            "quoteChar": "\"",
+                        },
+                    ),
+                    columns=[
+                        glue.CfnTable.ColumnProperty(name="id_venda", type="int"),
+                        glue.CfnTable.ColumnProperty(name="id_cliente", type="int"),
+                        glue.CfnTable.ColumnProperty(name="id_produto", type="int"),
+                        glue.CfnTable.ColumnProperty(name="data_venda", type="string"),
+                        glue.CfnTable.ColumnProperty(name="regiao", type="string"),
+                        glue.CfnTable.ColumnProperty(name="uf", type="string"),
+                        glue.CfnTable.ColumnProperty(name="quantidade", type="int"),
+                        glue.CfnTable.ColumnProperty(name="valor_unitario", type="double"),
+                        glue.CfnTable.ColumnProperty(name="canal_venda", type="string"),
                     ],
                 ),
             ),
